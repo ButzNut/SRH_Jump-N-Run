@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GroundDetect : MonoBehaviour
 {
@@ -30,7 +31,25 @@ public class GroundDetect : MonoBehaviour
             }
         }
 
-        Debug.DrawRay(groundDetection.position, Vector3.down, Color.red);
-        Debug.Log(groundInfo.collider);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (movingRight == true && collision.gameObject.tag != "Ground")
+        {
+            transform.eulerAngles = new Vector3(0, -180, 0);
+            movingRight = false;
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+            movingRight = true;
+        }
+
+        if(collision.gameObject.tag == "Player" && collision.rigidbody.velocity.y >= 0)
+        {
+            SceneManager.LoadScene(0);
+        }
+
     }
 }

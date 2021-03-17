@@ -11,17 +11,47 @@ public class Player_Movement : MonoBehaviour
 
     public bool IsGrounded;
 
+    public bool falling;
+
+    bool running;
+
+    Animator anim;
+
+    SpriteRenderer sprite;
+
     void Start()
     {
+        anim = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         float x_movement = Input.GetAxis("Horizontal");
 
         Vector2 movement = new Vector2(x_movement, 0);
         rb.velocity = new Vector2(x_movement * speed, rb.velocity.y);
+
+        anim.SetBool("Run", running);
+        anim.SetFloat("Speed", rb.velocity.x);
+
+        if(x_movement < 0 && x_movement != 0)
+        {
+            running = true;
+            sprite.flipX = true;
+        }
+        else if (x_movement > 0 && x_movement != 0)
+        {
+            running = true;
+            sprite.flipX = false;
+        }
+        else if (x_movement == 0)
+        {
+            running = false;
+        }
+
+
     }
 
     private void Update()
@@ -31,6 +61,10 @@ public class Player_Movement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 1 * jump_Force);
             IsGrounded = false;
         }
+        if (rb.velocity.y < 0)
+            falling = true;
+        else
+            falling = false;
     }
 
     #region Trigger
@@ -41,7 +75,7 @@ public class Player_Movement : MonoBehaviour
             IsGrounded = true;
         }
 
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == "Enemy" && falling == true)
         {
             rb.velocity = new Vector2(rb.velocity.x, 1 * jump_Force);
             GameObject.Destroy(other.gameObject);

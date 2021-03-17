@@ -58,3 +58,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+SRH_Jump&Run/Temp/
+SRH_Jump&Run/Library/EditorInstance.json
